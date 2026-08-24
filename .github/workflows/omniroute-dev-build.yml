@@ -47,7 +47,7 @@ jobs:
       - name: Build
         if: steps.check.outputs.new_commits != '0'
         env:
-          OMNIROUTE_BUILD_MEMORY_MB: 5632
+          OMNIROUTE_BUILD_MEMORY_MB: 1300
         run: |
           npm ci
           OMNIROUTE_BUILD_SHA=$(git rev-parse --short HEAD) npm run build
