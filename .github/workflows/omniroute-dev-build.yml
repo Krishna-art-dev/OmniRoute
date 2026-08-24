@@ -4,6 +4,11 @@ on:
   schedule:
     - cron: "0 4 * * *"
   workflow_dispatch:
+  push:
+    branches:
+      - release/v3.8.50
+    paths:
+      - ".github/workflows/omniroute-dev-build.yml"
 
 permissions:
   contents: write
