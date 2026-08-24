@@ -4,11 +4,6 @@ on:
   schedule:
     - cron: "0 4 * * *"
   workflow_dispatch:
-  push:
-    branches:
-      - release/v3.8.50
-    paths:
-      - ".github/workflows/omniroute-dev-build.yml"
 
 permissions:
   contents: write
@@ -73,13 +68,14 @@ jobs:
           gh release delete "$TAG" --yes --cleanup-tag 2>/dev/null || true
           npm pack
           mv omniroute-"${VERSION}".tgz omniroute-"${VERSION}"-dev."${SHORT}".tgz
+          gh release create "$TAG" omniroute-*.tgz \
+            --title "$TAG" \
+            --notes "Dev build from upstream commit ${SHORT} ($(git log -1 --format=%cs)).
+          Install: npm i -g ./omniroute-*.tgz"
+
       - name: Backup artifact
         if: always() && steps.check.outputs.new_commits != '0'
         uses: actions/upload-artifact@v4
         with:
           name: omniroute-dev-tgz
           path: omniroute-*.tgz
-          gh release create "$TAG" omniroute-*.tgz \
-            --title "$TAG" \
-            --notes "Dev build from upstream commit ${SHORT} ($(git log -1 --format=%cs)).
-          Install: npm i -g ./omniroute-*.tgz"
