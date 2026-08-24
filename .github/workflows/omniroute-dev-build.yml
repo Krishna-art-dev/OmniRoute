@@ -23,7 +23,6 @@ jobs:
           git fetch upstream --tags --force
           git remote set-head upstream --auto
           git reset --hard upstream/HEAD
-          echo "HEAD=$(git rev-parse HEAD)" >> "$GITHUB_ENV"
 
       - name: Skip if nothing new
         id: check
@@ -45,18 +44,12 @@ jobs:
         with:
           node-version: 24
 
-      - name: Setup pnpm
-        if: steps.check.outputs.new_commits != '0'
-        uses: pnpm/action-setup@v4
-        with:
-          version: 11
-
       - name: Build
         if: steps.check.outputs.new_commits != '0'
         run: |
-          pnpm install --frozen-lockfile
-          OMNIROUTE_BUILD_SHA=$(git rev-parse --short HEAD) pnpm run build
-          pnpm run build:cli
+          npm ci
+          OMNIROUTE_BUILD_SHA=$(git rev-parse --short HEAD) npm run build
+          npm run build:cli
           node scripts/build/write-build-sha.mjs
 
       - name: Pack and publish release
