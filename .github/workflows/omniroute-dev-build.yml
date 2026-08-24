@@ -28,6 +28,7 @@ jobs:
         id: check
         env:
           GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
         run: |
           LAST=$(gh release list --limit 1 --json tagName -q '.[0].tagName' || echo "")
           if [ -n "$LAST" ]; then
@@ -59,6 +60,7 @@ jobs:
         if: steps.check.outputs.new_commits != '0'
         env:
           GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
         run: |
           VERSION=$(node -p "require('./package.json').version")
           SHORT=$(git rev-parse --short HEAD)
